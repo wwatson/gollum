@@ -434,14 +434,15 @@ module Precious
       end
     end
 
-    get %r{
-      /compare/ # match any URL beginning with /compare/
-      (.+)      # extract the full path (including any directories)
-      /         # match the final slash
-      ([^.]+)   # match the first SHA1
-      \.{2,3}   # match .. or ...
-      (.+)      # match the second SHA1
-    }x do |path, start_version, end_version|
+    # get %r{
+    #   /compare/ # match any URL beginning with /compare/
+    #   (.+)      # extract the full path (including any directories)
+    #   /         # match the final slash
+    #   ([^.]+)   # match the first SHA1
+    #   \.{2,3}   # match .. or ...
+    #   (.+)      # match the second SHA1
+    # }x
+    get /\/compare\/(.+)\/([^.]+)\.{2,3}(.+)/x do |path, start_version, end_version|
       wikip     = wiki_page(path)
       @path     = wikip.path
       @name     = wikip.name
@@ -482,12 +483,13 @@ module Precious
       mustache :search
     end
 
-    get %r{
-      /pages  # match any URL beginning with /pages
-      (?:     # begin an optional non-capturing group
-        /(.+) # capture any path after the "/pages" excluding the leading slash
-      )?      # end the optional non-capturing group
-    }x do |path|
+    # get %r{
+    #   /pages  # match any URL beginning with /pages
+    #   (?:     # begin an optional non-capturing group
+    #     /(.+) # capture any path after the "/pages" excluding the leading slash
+    #   )?      # end the optional non-capturing group
+    # }x
+    get /\/pages(?:\/(.+))?/x do |path|
       @path        = extract_path(path) if path
       wiki_options = settings.wiki_options.merge({ :page_file_dir => @path })
       wiki         = Gollum::Wiki.new(settings.gollum_path, wiki_options)
